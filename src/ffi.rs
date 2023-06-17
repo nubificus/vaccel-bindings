@@ -80,7 +80,7 @@ where
         }
     }
 }
-pub const VACCELRT_VERSION: &[u8; 19usize] = b"v0.5.0-54-gc2371a5\0";
+pub const VACCELRT_VERSION: &[u8; 19usize] = b"v0.5.0-61-gcbd4139\0";
 pub const _ERRNO_H: u32 = 1;
 pub const _FEATURES_H: u32 = 1;
 pub const _DEFAULT_SOURCE: u32 = 1;
