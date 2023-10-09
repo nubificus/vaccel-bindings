@@ -31,4 +31,3 @@ cmake = "0.1.45"
 [dev-dependencies]
 env_logger.workspace = true
 log.workspace  = true
-utilities = { path = "utilities" }
