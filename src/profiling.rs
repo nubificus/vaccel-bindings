@@ -3,13 +3,13 @@ use crate::ffi;
 
 use std::{
     collections::{btree_map, BTreeMap},
-    time::Duration,
     ops::Deref,
+    time::Duration,
 };
 
-use protocols::profiling::ProfRegions as ProtProfRegions;
+use protocols::profiling::prof_region::Sample as ProtSample;
 use protocols::profiling::ProfRegion as ProtProfRegion;
-use protocols::profiling::ProfRegion_Sample as ProtSample;
+use protocols::profiling::ProfRegions as ProtProfRegions;
 
 const NSEC_PER_SEC: u32 = 1_000_000_000;
 
@@ -53,7 +53,10 @@ impl Timespec {
     }
 
     pub const fn from_nanos(nanos: u64) -> Timespec {
-        Timespec::new(nanos / (NSEC_PER_SEC as u64), (nanos % (NSEC_PER_SEC as u64)) as u32)
+        Timespec::new(
+            nanos / (NSEC_PER_SEC as u64),
+            (nanos % (NSEC_PER_SEC as u64)) as u32,
+        )
     }
 }
 
@@ -107,8 +110,7 @@ impl IntoIterator for ProfRegions {
     }
 }
 
-impl Extend<(String, Vec<Sample>)> for ProfRegions
-{
+impl Extend<(String, Vec<Sample>)> for ProfRegions {
     fn extend<T: IntoIterator<Item = (String, Vec<Sample>)>>(&mut self, iter: T) {
         self.map.extend(iter)
     }
@@ -280,13 +282,19 @@ impl ProfRegions {
 
 impl From<&mut ProtSample> for Sample {
     fn from(arg: &mut ProtSample) -> Self {
-        Sample::new(Timespec::from_nanos(arg.get_start()), Duration::from_nanos(arg.get_time()))
+        Sample::new(
+            Timespec::from_nanos(arg.start),
+            Duration::from_nanos(arg.time),
+        )
     }
 }
 
 impl From<&ProtSample> for Sample {
     fn from(arg: &ProtSample) -> Self {
-        Sample::new(Timespec::from_nanos(arg.get_start()), Duration::from_nanos(arg.get_time()))
+        Sample::new(
+            Timespec::from_nanos(arg.start),
+            Duration::from_nanos(arg.time),
+        )
     }
 }
 
@@ -294,9 +302,9 @@ impl From<ProtProfRegions> for ProfRegions {
     fn from(arg: ProtProfRegions) -> Self {
         let mut t = ProfRegions::new("test");
 
-        for pt in arg.get_timer().into_iter() {
-            let s: Vec<Sample> = pt.get_samples().into_iter().map(|x| x.into()).collect();
-            t.insert(pt.get_name(), s);
+        for pt in arg.timer.into_iter() {
+            let s: Vec<Sample> = pt.samples.into_iter().map(|x| (&x).into()).collect();
+            t.insert(&pt.name, s);
         }
         t
     }
@@ -305,8 +313,8 @@ impl From<ProtProfRegions> for ProfRegions {
 impl From<&Sample> for ProtSample {
     fn from(arg: &Sample) -> Self {
         let mut s = ProtSample::new();
-        s.set_start(arg.start.as_nanos() as u64);
-        s.set_time(arg.time.as_nanos() as u64);
+        s.start = arg.start.as_nanos() as u64;
+        s.time = arg.time.as_nanos() as u64;
         s
     }
 }
@@ -316,12 +324,12 @@ impl From<ProfRegions> for ProtProfRegions {
         let mut pt: Vec<ProtProfRegion> = Vec::new();
         for (n, t) in arg.iter() {
             let mut p = ProtProfRegion::new();
-            p.set_name(n.to_string());
-            p.set_samples(t.iter().map(|x| x.into()).collect());
+            p.name = n.to_string();
+            p.samples = t.iter().map(|x| x.into()).collect();
             pt.push(p);
         }
         let mut t = ProtProfRegions::new();
-        t.set_timer(pt.into());
+        t.timer = pt.into();
         t
     }
 }
