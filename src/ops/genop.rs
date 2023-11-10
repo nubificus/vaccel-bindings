@@ -18,7 +18,7 @@ impl GenopArg {
                 size: size as u32,
             },
             buf: b,
-            size: size,
+            size,
         }
     }
     pub fn get_size(&self) -> u32 {
