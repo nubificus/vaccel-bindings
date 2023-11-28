@@ -80,7 +80,7 @@ where
         }
     }
 }
-pub const VACCELRT_VERSION: &[u8; 19usize] = b"v0.5.0-20-g914649b\0";
+pub const VACCELRT_VERSION: &[u8; 18usize] = b"0.5.0-36-96c4fa8e\0";
 pub const _ERRNO_H: u32 = 1;
 pub const _FEATURES_H: u32 = 1;
 pub const _DEFAULT_SOURCE: u32 = 1;
@@ -6558,10 +6558,11 @@ pub const VACCEL_F_VECTORADD: vaccel_op_type = 19;
 pub const VACCEL_EXEC_WITH_RESOURCE: vaccel_op_type = 20;
 pub const VACCEL_TORCH_JITLOAD_FORWARD: vaccel_op_type = 21;
 pub const VACCEL_TORCH_SGEMM: vaccel_op_type = 22;
-pub const VACCEL_FUNCTIONS_NR: vaccel_op_type = 23;
+pub const VACCEL_OPENCV: vaccel_op_type = 23;
+pub const VACCEL_FUNCTIONS_NR: vaccel_op_type = 24;
 pub type vaccel_op_type = ::std::os::raw::c_uint;
 extern "C" {
-    pub static mut vaccel_op_name: [*const ::std::os::raw::c_char; 24usize];
+    pub static mut vaccel_op_name: [*const ::std::os::raw::c_char; 25usize];
 }
 extern "C" {
     pub fn vaccel_sgemm(
@@ -6818,7 +6819,7 @@ extern "C" {
 #[derive(Debug, Copy, Clone)]
 pub struct vaccel_tf_node {
     pub name: *mut ::std::os::raw::c_char,
-    pub id: ::std::os::raw::c_longlong,
+    pub id: ::std::os::raw::c_int,
 }
 #[test]
 fn bindgen_test_layout_vaccel_tf_node() {
@@ -6865,7 +6866,7 @@ impl Default for vaccel_tf_node {
 extern "C" {
     pub fn vaccel_tf_node_new(
         name: *const ::std::os::raw::c_char,
-        id: ::std::os::raw::c_longlong,
+        id: ::std::os::raw::c_int,
     ) -> *mut vaccel_tf_node;
 }
 extern "C" {
@@ -6875,7 +6876,7 @@ extern "C" {
     pub fn vaccel_tf_node_get_name(node: *mut vaccel_tf_node) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
-    pub fn vaccel_tf_node_get_id(node: *mut vaccel_tf_node) -> ::std::os::raw::c_longlong;
+    pub fn vaccel_tf_node_get_id(node: *mut vaccel_tf_node) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
@@ -6884,7 +6885,7 @@ pub struct vaccel_tf_tensor {
     pub size: usize,
     pub owned: bool,
     pub nr_dims: ::std::os::raw::c_int,
-    pub dims: *mut u32,
+    pub dims: *mut i64,
     pub data_type: vaccel_tf_data_type,
 }
 #[test]
@@ -6972,14 +6973,14 @@ impl Default for vaccel_tf_tensor {
 extern "C" {
     pub fn vaccel_tf_tensor_new(
         nr_dims: ::std::os::raw::c_int,
-        dims: *mut u32,
+        dims: *mut i64,
         type_: vaccel_tf_data_type,
     ) -> *mut vaccel_tf_tensor;
 }
 extern "C" {
     pub fn vaccel_tf_tensor_allocate(
         nr_dims: ::std::os::raw::c_int,
-        dims: *mut u32,
+        dims: *mut i64,
         type_: vaccel_tf_data_type,
         total_size: usize,
     ) -> *mut vaccel_tf_tensor;
@@ -7108,6 +7109,15 @@ extern "C" {
         C: *mut f32,
         len_a: usize,
         len_b: usize,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vaccel_opencv_unpack(
+        sess: *mut vaccel_session,
+        read: *mut vaccel_arg,
+        nr_read: ::std::os::raw::c_int,
+        write: *mut vaccel_arg,
+        nr_write: ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
