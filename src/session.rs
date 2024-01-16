@@ -1,7 +1,4 @@
-use crate::ffi;
-use crate::resource::Resource;
-use crate::VaccelId;
-use crate::{Error, Result};
+use crate::{ffi, Error, Resource, Result, VaccelId};
 
 /// The vAccel session  type
 ///
