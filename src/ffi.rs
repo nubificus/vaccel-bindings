@@ -80,7 +80,7 @@ where
         }
     }
 }
-pub const VACCELRT_VERSION: &[u8; 19usize] = b"v0.5.0-54-gc2371a5\0";
+pub const VACCELRT_VERSION: &[u8; 24usize] = b"0.5.0-62-6eac79f3-dirty\0";
 pub const _ERRNO_H: u32 = 1;
 pub const _FEATURES_H: u32 = 1;
 pub const _DEFAULT_SOURCE: u32 = 1;
@@ -4840,11 +4840,6 @@ pub struct session_resources {
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]
-pub struct vaccel_resource {
-    _unused: [u8; 0],
-}
-#[repr(C)]
-#[derive(Debug, Copy, Clone)]
 pub struct vaccel_session {
     pub session_id: u32,
     pub resources: *mut session_resources,
@@ -4940,16 +4935,143 @@ extern "C" {
         resource: *mut vaccel_resource,
     ) -> bool;
 }
-pub type vaccel_id_t = ::std::os::raw::c_longlong;
-pub const VACCEL_RES_SHARED_OBJ: vaccel_resource_t = 0;
-pub const VACCEL_RES_SINGLE_MODEL: vaccel_resource_t = 1;
-pub const VACCEL_RES_TF_SAVED_MODEL: vaccel_resource_t = 2;
-pub const VACCEL_RES_MAX: vaccel_resource_t = 3;
-pub type vaccel_resource_t = ::std::os::raw::c_uint;
-extern "C" {
-    pub fn resource_get_id(resource: *mut vaccel_resource) -> vaccel_id_t;
-}
 pub type wchar_t = ::std::os::raw::c_int;
+#[repr(C)]
+#[repr(align(16))]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct max_align_t {
+    pub __clang_max_align_nonce1: ::std::os::raw::c_longlong,
+    pub __bindgen_padding_0: u64,
+    pub __clang_max_align_nonce2: u128,
+}
+#[test]
+fn bindgen_test_layout_max_align_t() {
+    assert_eq!(
+        ::std::mem::size_of::<max_align_t>(),
+        32usize,
+        concat!("Size of: ", stringify!(max_align_t))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<max_align_t>(),
+        16usize,
+        concat!("Alignment of ", stringify!(max_align_t))
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<max_align_t>())).__clang_max_align_nonce1 as *const _ as usize
+        },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(max_align_t),
+            "::",
+            stringify!(__clang_max_align_nonce1)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<max_align_t>())).__clang_max_align_nonce2 as *const _ as usize
+        },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(max_align_t),
+            "::",
+            stringify!(__clang_max_align_nonce2)
+        )
+    );
+}
+pub const memory_order_relaxed: memory_order = 0;
+pub const memory_order_consume: memory_order = 1;
+pub const memory_order_acquire: memory_order = 2;
+pub const memory_order_release: memory_order = 3;
+pub const memory_order_acq_rel: memory_order = 4;
+pub const memory_order_seq_cst: memory_order = 5;
+pub type memory_order = ::std::os::raw::c_uint;
+extern "C" {
+    pub fn atomic_thread_fence(arg1: memory_order);
+}
+extern "C" {
+    pub fn atomic_signal_fence(arg1: memory_order);
+}
+pub type atomic_bool = u8;
+pub type atomic_char = u8;
+pub type atomic_schar = u8;
+pub type atomic_uchar = u8;
+pub type atomic_short = u16;
+pub type atomic_ushort = u16;
+pub type atomic_int = u32;
+pub type atomic_uint = u32;
+pub type atomic_long = u64;
+pub type atomic_ulong = u64;
+pub type atomic_llong = u64;
+pub type atomic_ullong = u64;
+pub type atomic_char16_t = u16;
+pub type atomic_char32_t = u32;
+pub type atomic_wchar_t = u32;
+pub type atomic_int_least8_t = u8;
+pub type atomic_uint_least8_t = u8;
+pub type atomic_int_least16_t = u16;
+pub type atomic_uint_least16_t = u16;
+pub type atomic_int_least32_t = u32;
+pub type atomic_uint_least32_t = u32;
+pub type atomic_int_least64_t = u64;
+pub type atomic_uint_least64_t = u64;
+pub type atomic_int_fast8_t = u8;
+pub type atomic_uint_fast8_t = u8;
+pub type atomic_int_fast16_t = u64;
+pub type atomic_uint_fast16_t = u64;
+pub type atomic_int_fast32_t = u64;
+pub type atomic_uint_fast32_t = u64;
+pub type atomic_int_fast64_t = u64;
+pub type atomic_uint_fast64_t = u64;
+pub type atomic_intptr_t = u64;
+pub type atomic_uintptr_t = u64;
+pub type atomic_size_t = u64;
+pub type atomic_ptrdiff_t = u64;
+pub type atomic_intmax_t = u64;
+pub type atomic_uintmax_t = u64;
+#[repr(C)]
+#[derive(Debug, Default, Copy, Clone)]
+pub struct atomic_flag {
+    pub _Value: atomic_bool,
+}
+#[test]
+fn bindgen_test_layout_atomic_flag() {
+    assert_eq!(
+        ::std::mem::size_of::<atomic_flag>(),
+        1usize,
+        concat!("Size of: ", stringify!(atomic_flag))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<atomic_flag>(),
+        1usize,
+        concat!("Alignment of ", stringify!(atomic_flag))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<atomic_flag>()))._Value as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(atomic_flag),
+            "::",
+            stringify!(_Value)
+        )
+    );
+}
+extern "C" {
+    pub fn atomic_flag_test_and_set(arg1: *mut atomic_flag) -> bool;
+}
+extern "C" {
+    pub fn atomic_flag_test_and_set_explicit(arg1: *mut atomic_flag, arg2: memory_order) -> bool;
+}
+extern "C" {
+    pub fn atomic_flag_clear(arg1: *mut atomic_flag);
+}
+extern "C" {
+    pub fn atomic_flag_clear_explicit(arg1: *mut atomic_flag, arg2: memory_order);
+}
+pub type vaccel_id_t = ::std::os::raw::c_longlong;
 #[repr(C)]
 #[derive(Debug, Default, Copy, Clone)]
 pub struct div_t {
@@ -5854,51 +5976,6 @@ extern "C" {
         -> ::std::os::raw::c_int;
 }
 #[repr(C)]
-#[repr(align(16))]
-#[derive(Debug, Default, Copy, Clone)]
-pub struct max_align_t {
-    pub __clang_max_align_nonce1: ::std::os::raw::c_longlong,
-    pub __bindgen_padding_0: u64,
-    pub __clang_max_align_nonce2: u128,
-}
-#[test]
-fn bindgen_test_layout_max_align_t() {
-    assert_eq!(
-        ::std::mem::size_of::<max_align_t>(),
-        32usize,
-        concat!("Size of: ", stringify!(max_align_t))
-    );
-    assert_eq!(
-        ::std::mem::align_of::<max_align_t>(),
-        16usize,
-        concat!("Alignment of ", stringify!(max_align_t))
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<max_align_t>())).__clang_max_align_nonce1 as *const _ as usize
-        },
-        0usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(max_align_t),
-            "::",
-            stringify!(__clang_max_align_nonce1)
-        )
-    );
-    assert_eq!(
-        unsafe {
-            &(*(::std::ptr::null::<max_align_t>())).__clang_max_align_nonce2 as *const _ as usize
-        },
-        16usize,
-        concat!(
-            "Offset of field: ",
-            stringify!(max_align_t),
-            "::",
-            stringify!(__clang_max_align_nonce2)
-        )
-    );
-}
-#[repr(C)]
 #[derive(Debug, Copy, Clone)]
 pub struct list_entry {
     pub next: *mut list_entry,
@@ -5948,6 +6025,161 @@ impl Default for list_entry {
 }
 pub type list_entry_t = list_entry;
 pub type list_t = list_entry_t;
+pub const VACCEL_RES_SHARED_OBJ: vaccel_resource_t = 0;
+pub const VACCEL_RES_SINGLE_MODEL: vaccel_resource_t = 1;
+pub const VACCEL_RES_TF_SAVED_MODEL: vaccel_resource_t = 2;
+pub const VACCEL_RES_MAX: vaccel_resource_t = 3;
+pub type vaccel_resource_t = ::std::os::raw::c_uint;
+#[repr(C)]
+#[derive(Debug, Copy, Clone)]
+pub struct vaccel_resource {
+    pub id: vaccel_id_t,
+    pub type_: vaccel_resource_t,
+    pub data: *mut ::std::os::raw::c_void,
+    pub cleanup_resource: ::std::option::Option<
+        unsafe extern "C" fn(data: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int,
+    >,
+    pub entry: list_entry_t,
+    pub refcount: atomic_uint,
+    pub rundir: *mut ::std::os::raw::c_char,
+    pub deps: *mut *mut vaccel_resource,
+    pub nr_deps: usize,
+}
+#[test]
+fn bindgen_test_layout_vaccel_resource() {
+    assert_eq!(
+        ::std::mem::size_of::<vaccel_resource>(),
+        80usize,
+        concat!("Size of: ", stringify!(vaccel_resource))
+    );
+    assert_eq!(
+        ::std::mem::align_of::<vaccel_resource>(),
+        8usize,
+        concat!("Alignment of ", stringify!(vaccel_resource))
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).id as *const _ as usize },
+        0usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(id)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).type_ as *const _ as usize },
+        8usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(type_)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).data as *const _ as usize },
+        16usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(data)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<vaccel_resource>())).cleanup_resource as *const _ as usize
+        },
+        24usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(cleanup_resource)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).entry as *const _ as usize },
+        32usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(entry)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).refcount as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(refcount)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).rundir as *const _ as usize },
+        56usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(rundir)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).deps as *const _ as usize },
+        64usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(deps)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_resource>())).nr_deps as *const _ as usize },
+        72usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_resource),
+            "::",
+            stringify!(nr_deps)
+        )
+    );
+}
+impl Default for vaccel_resource {
+    fn default() -> Self {
+        let mut s = ::std::mem::MaybeUninit::<Self>::uninit();
+        unsafe {
+            ::std::ptr::write_bytes(s.as_mut_ptr(), 0, 1);
+            s.assume_init()
+        }
+    }
+}
+extern "C" {
+    pub fn vaccel_resource_deps_to_ids(
+        ids: *mut vaccel_id_t,
+        res: *mut *mut vaccel_resource,
+        nr_ids: usize,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vaccel_resource_deps_from_ids(
+        deps: *mut *mut vaccel_resource,
+        ids: *mut vaccel_id_t,
+        nr_ids: usize,
+    ) -> ::std::os::raw::c_int;
+}
+extern "C" {
+    pub fn vaccel_resource_set_deps_from_ids(
+        res: *mut vaccel_resource,
+        ids: *mut vaccel_id_t,
+        nr_ids: usize,
+    ) -> ::std::os::raw::c_int;
+}
 pub const VACCEL_PLUGIN_CPU: vaccel_plugin_type = 1;
 pub const VACCEL_PLUGIN_GPU: vaccel_plugin_type = 2;
 pub const VACCEL_PLUGIN_FPGA: vaccel_plugin_type = 4;
@@ -5994,6 +6226,13 @@ pub struct vaccel_plugin_info {
             id: *mut vaccel_id_t,
         ) -> ::std::os::raw::c_int,
     >,
+    pub resource_set_deps: ::std::option::Option<
+        unsafe extern "C" fn(
+            res: *mut vaccel_resource,
+            deps: *mut *mut vaccel_resource,
+            nr_deps: usize,
+        ) -> ::std::os::raw::c_int,
+    >,
     pub resource_destroy:
         ::std::option::Option<unsafe extern "C" fn(id: vaccel_id_t) -> ::std::os::raw::c_int>,
 }
@@ -6001,7 +6240,7 @@ pub struct vaccel_plugin_info {
 fn bindgen_test_layout_vaccel_plugin_info() {
     assert_eq!(
         ::std::mem::size_of::<vaccel_plugin_info>(),
-        96usize,
+        104usize,
         concat!("Size of: ", stringify!(vaccel_plugin_info))
     );
     assert_eq!(
@@ -6135,9 +6374,21 @@ fn bindgen_test_layout_vaccel_plugin_info() {
     );
     assert_eq!(
         unsafe {
-            &(*(::std::ptr::null::<vaccel_plugin_info>())).resource_destroy as *const _ as usize
+            &(*(::std::ptr::null::<vaccel_plugin_info>())).resource_set_deps as *const _ as usize
         },
         88usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_plugin_info),
+            "::",
+            stringify!(resource_set_deps)
+        )
+    );
+    assert_eq!(
+        unsafe {
+            &(*(::std::ptr::null::<vaccel_plugin_info>())).resource_destroy as *const _ as usize
+        },
+        96usize,
         concat!(
             "Offset of field: ",
             stringify!(vaccel_plugin_info),
@@ -7575,13 +7826,15 @@ extern "C" {
 pub struct vaccel_shared_object {
     pub resource: *mut vaccel_resource,
     pub file: vaccel_file,
+    pub deps: *mut vaccel_shared_object,
+    pub nr_deps: usize,
     pub plugin_data: *mut ::std::os::raw::c_void,
 }
 #[test]
 fn bindgen_test_layout_vaccel_shared_object() {
     assert_eq!(
         ::std::mem::size_of::<vaccel_shared_object>(),
-        48usize,
+        64usize,
         concat!("Size of: ", stringify!(vaccel_shared_object))
     );
     assert_eq!(
@@ -7610,10 +7863,30 @@ fn bindgen_test_layout_vaccel_shared_object() {
         )
     );
     assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_shared_object>())).deps as *const _ as usize },
+        40usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_shared_object),
+            "::",
+            stringify!(deps)
+        )
+    );
+    assert_eq!(
+        unsafe { &(*(::std::ptr::null::<vaccel_shared_object>())).nr_deps as *const _ as usize },
+        48usize,
+        concat!(
+            "Offset of field: ",
+            stringify!(vaccel_shared_object),
+            "::",
+            stringify!(nr_deps)
+        )
+    );
+    assert_eq!(
         unsafe {
             &(*(::std::ptr::null::<vaccel_shared_object>())).plugin_data as *const _ as usize
         },
-        40usize,
+        56usize,
         concat!(
             "Offset of field: ",
             stringify!(vaccel_shared_object),
@@ -7656,6 +7929,14 @@ extern "C" {
         object: *mut vaccel_shared_object,
         len: *mut usize,
     ) -> *const u8;
+}
+extern "C" {
+    pub fn vaccel_shared_object_new_with_deps(
+        object: *mut vaccel_shared_object,
+        path: *const ::std::os::raw::c_char,
+        dep_paths: *mut *const ::std::os::raw::c_char,
+        nr_deps: usize,
+    ) -> ::std::os::raw::c_int;
 }
 #[repr(C)]
 #[derive(Debug, Copy, Clone)]

@@ -67,7 +67,7 @@ impl SharedObject {
     }
 
     /// Return bytes
-    pub fn get_bytes(&self) -> Option<&[u8]> {
+    pub fn as_bytes(&self) -> Option<&[u8]> {
         let mut size = Default::default();
         let ptr = unsafe { ffi::vaccel_shared_object_get(self.inner, &mut size) };
 

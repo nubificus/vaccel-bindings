@@ -1,4 +1,4 @@
-use crate::{ffi, Result, VaccelId};
+use crate::{ffi, Error, Result, VaccelId};
 use std::any::Any;
 
 pub mod shared_obj;
@@ -32,4 +32,16 @@ pub trait Resource {
 
     /// "Cast" VaccelResource to a mutable Any type
     fn as_mut_any(&mut self) -> &mut dyn Any;
+
+    fn set_deps(&self, deps: Vec<i64>) -> Result<()> {
+        let resource = self.to_mut_vaccel_ptr().ok_or(Error::InvalidArgument)?;
+
+        let mut d: Vec<ffi::vaccel_id_t> = deps.iter().map(|&i| i.into()).collect();
+        match unsafe {
+            ffi::vaccel_resource_set_deps_from_ids(resource, d.as_mut_ptr(), d.len()) as u32
+        } {
+            ffi::VACCEL_OK => Ok(()),
+            err => Err(Error::Runtime(err))
+        }
+    }
 }
